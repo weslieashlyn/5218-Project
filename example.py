@@ -12,7 +12,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Model to device
-device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+# device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 transform = transforms.Compose([transforms.RandomHorizontalFlip(),
                                 transforms.RandomRotation(0.2),

@@ -24,7 +24,7 @@ dataset = torchvision.datasets.ImageFolder(root = 'flowers',
                                            transform = transform)
 print("No of Classes: ", len(dataset.classes))
 
-train, val = torch.utils.data.random_split(dataset, [3000, 1323])
+train, val = torch.utils.data.random_split(dataset, [3458, 865])
 
 train_loader = torch.utils.data.DataLoader(dataset = train,
                                            batch_size = 32, 
@@ -118,7 +118,7 @@ Acc = []
 Val_Loss = []
 Val_Acc = []
 
-for epoch in range(5):
+for epoch in range(15):
     acc = 0
     val_acc = 0
     for i, (images, labels) in enumerate(train_loader):
@@ -163,3 +163,44 @@ for epoch in range(5):
 
     Val_Loss.append(val_loss)
     Val_Acc.append(val_acc)
+
+
+plt.plot(range(20),Loss)
+plt.plot(range(20),Val_Loss)
+plt.ylabel('Loss')
+plt.xlabel('Epoch')
+plt.title("Loss")
+plt.legend(["Training Loss", "Validation Loss"])
+plt.show()
+
+
+plt.plot(range(20),Acc)
+plt.plot(range(20),Val_Acc)
+plt.ylabel('Accuracy')
+plt.xlabel('Epoch')
+plt.title("Accuracy")
+plt.legend(["Training Accuracy", "Validation Accuracy"])
+plt.show()
+
+
+# Test the model
+
+model.eval()  
+with torch.no_grad():
+    correct = 0
+    total = 0
+    for images, labels in val_loader:
+        y_pred = []
+        Images = images.to(device)
+        Labels = labels.to(device)
+        outputs = model(Images)
+        prediction_array = outputs.data
+        
+        _, predicted = torch.max(prediction_array, 1)
+        y_pred += predicted
+        total += Labels.size(0)
+        correct += (predicted == Labels).sum().item()
+        
+    acc = 100 * correct / total
+    Accuracies.append(acc)
+    print('Test Accuracy of the model on the test images: {} %'.format(100 * correct / total))
